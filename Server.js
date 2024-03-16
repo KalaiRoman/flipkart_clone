@@ -1,20 +1,46 @@
 import dotenv from 'dotenv';
-
 import express from 'express';
+import cors from 'cors';
+import router from './Routing/Routing.js';
+import bodyparser from 'body-parser';
+import helmet from 'helmet';
+import { errorMiddleware, notFound } from './Middleware/errorMiddleware.js';
+import ConnectDB from './Config/Db.js';
+// env
 dotenv.config();
-
+// db connect
+ConnectDB();
+// app
 const app = express();
-
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    return res.send("welcome to kalai")
-})
+app.use(bodyparser.urlencoded({
+    limit: '50mb',
+    extended: true,
+}));
 
+// var whitelist = ['http://localhost:3000/', 'https://admin-flipkart.onrender.com/', 'https://seller-flipkart.onrender.com/', 'https://flipkart-pvag.onrender.com/']
+// var corsOptionsDelegate = function (req, callback) {
+//     var corsOptions;
+//     if (whitelist.indexOf(req.header('Origin')) !== -1) {
+//         corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
+//     } else {
+//         corsOptions = { origin: false } // disable CORS for this request
+//     }
+//     callback(null, corsOptions) // callback expects two parameters: error and options
+// }
 
+app.use(cors("*"));
+// helmet secure
+app.use(helmet());
+// routing apis
+app.use("/flip/ecommerce", router);
+// listing port in db server
+
+// error middleware
+app.use(notFound)
+app.use(errorMiddleware)
 app.listen(process.env.PORT, () => {
-    console.log(`server Running ${process.env.PORT}`)
+    console.log(`server Running http://localhost:${process.env.PORT}`)
 })
 
-
-console.log("kalia")
