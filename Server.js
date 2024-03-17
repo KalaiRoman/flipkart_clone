@@ -33,8 +33,11 @@ var corsOptionsDelegate = function (req, callback) {
 }
 // helmet secure
 app.use(helmet());
+
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+
 // routing apis
-app.use("/flip/ecommerce", cors(corsOptionsDelegate), router);
+app.use("/flip/ecommerce", router);
 // listing port in db server
 
 // error middleware

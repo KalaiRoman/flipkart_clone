@@ -29,6 +29,9 @@ const seller_shema = new mongoose.Schema({
         required: true,
         default: true
     },
+    cloud_id: {
+        type: String
+    }
 
 },
     {
