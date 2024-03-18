@@ -5,6 +5,7 @@ import nodemailer from 'nodemailer';
 import otp_shema from "../../../Models/auth/otp_shema.js";
 import otpGenerator from 'otp-generator';
 import { v2 as cloudinary } from 'cloudinary';
+import Admin_models from "../../../Models/auth/Admin_models.js";
 
 
 var transporter = nodemailer.createTransport({
@@ -40,7 +41,7 @@ export const createSeller = async (req, res) => {
             sellerStatus: true,
         });
         await newSeller.save();
-        const token = jwt.sign({ _id: newSeller._id }, process.env.token, { expiresIn: "10d" });
+        const token = jwt.sign({ _id: newSeller._id }, process.env.TOKEN, { expiresIn: "10d" });
         return res.status(201).json({ message: "Seller Registered Successfully", user: newSeller, token });
     } catch (error) {
         return res.status(500).json({ message: "Internal Server Error" });
@@ -61,7 +62,7 @@ export const GoogleOauthRegister = async (req, res) => {
 
         if (existingUser) {
             if (existingUser?.sellerStatus === true) {
-                const token = jwt.sign({ _id: existingUser._id }, process.env.token, { expiresIn: "10d" });
+                const token = jwt.sign({ _id: existingUser._id }, process.env.TOKEN, { expiresIn: "10d" });
                 const { password, ...otherData } = existingUser?._doc;
                 CallBackOtp(existingUser?._id, email)
                 return res.status(200).json({ message: "Success", user: otherData, token });
@@ -85,7 +86,7 @@ export const GoogleOauthRegister = async (req, res) => {
                 sellerStatus: true,
             });
             await newSeller.save();
-            const token = jwt.sign({ _id: newSeller._id }, process.env.token, { expiresIn: "10d" });
+            const token = jwt.sign({ _id: newSeller._id }, process.env.TOKEN, { expiresIn: "10d" });
             return res.status(201).json({ message: "Seller Login Successfully", user: newSeller, token });
         }
 
@@ -110,7 +111,7 @@ export const userLogin = async (req, res) => {
             if (existingUser?.sellerStatus === true) {
                 const hashedPassword = await bcrypt.compare(password, existingUser?.password);
                 if (hashedPassword) {
-                    const token = jwt.sign({ _id: existingUser._id }, process.env.token, { expiresIn: "10d" });
+                    const token = jwt.sign({ _id: existingUser._id }, process.env.TOKEN, { expiresIn: "10d" });
                     const { password, ...otherData } = existingUser?._doc;
                     CallBackOtp(existingUser?._id, email)
                     return res.status(200).json({ message: "Success", user: otherData, token });
@@ -242,5 +243,46 @@ export const UpdateProfileImage = async (req, res) => {
         });
     } catch (error) {
         return res.status(500).json({ message: error });
+    }
+}
+// get admin users
+
+
+export const Adiminuser = async (req, res) => {
+    try {
+
+        const response = await Admin_models.find();
+
+
+        if (response) {
+            res.status(200).json({ message: "success", adminuser: response });
+
+        }
+
+    } catch (error) {
+        res.status(500).json({ message: error });
+
+    }
+}
+
+// chat
+
+export const ChatUserseller = async (req, res) => {
+    const { userid, message, type } = req.body;
+    try {
+
+        const data = {
+            message: message,
+            type: type
+        }
+        const response = await SellerModel.findByIdAndUpdate({ _id: userid }, {
+            $push: { chat: data }
+        }, { new: true });
+
+
+        res.status(200).json({ message: "succesfully chat user" })
+
+    } catch (error) {
+
     }
 }

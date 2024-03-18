@@ -1,6 +1,16 @@
 import mongoose from 'mongoose';
 
 
+const chat_shema = new mongoose.Schema({
+    message: {
+        type: String,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true
+    }
+})
 const seller_shema = new mongoose.Schema({
     username: String,
     email: {
@@ -31,7 +41,8 @@ const seller_shema = new mongoose.Schema({
     },
     cloud_id: {
         type: String
-    }
+    },
+    chat: [chat_shema]
 
 },
     {
