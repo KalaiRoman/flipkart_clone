@@ -44,6 +44,7 @@ export const createSeller = async (req, res) => {
         const token = jwt.sign({ _id: newSeller._id }, process.env.TOKEN, { expiresIn: "10d" });
         return res.status(201).json({ message: "Seller Registered Successfully", user: newSeller, token });
     } catch (error) {
+        
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
