@@ -34,7 +34,10 @@ var corsOptionsDelegate = function (req, callback) {
 // helmet secure
 app.use(helmet());
 
-app.use(cors());
+app.use(cors({
+    origin: '*'
+}));
+
 
 // routing apis
 app.use("/flip/ecommerce", router);
