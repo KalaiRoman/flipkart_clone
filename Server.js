@@ -22,7 +22,7 @@ app.use(morgan("dev"));
 // helmet secure
 app.use(helmet());
 
-app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001","https://kalaiportfolio.onrender.com/"] }));
+app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001","https://kalaiportfolio.onrender.com","https://kalaiportfolio.vercel.app"] }));
 // routing apis
 app.use("/flip/ecommerce", router);
 // listing port in db server
