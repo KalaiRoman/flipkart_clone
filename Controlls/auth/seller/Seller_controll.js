@@ -64,8 +64,8 @@ export const GoogleOauthRegister = async (req, res) => {
         if (existingUser) {
             if (existingUser?.sellerStatus === true) {
                 const token = jwt.sign({ _id: existingUser._id }, process.env.TOKEN, { expiresIn: "10d" });
-                const { password, ...otherData } = existingUser?._doc;
                 CallBackOtp(existingUser?._id, email)
+                const { password, ...otherData } = existingUser?._doc;
                 return res.status(200).json({ message: "Success", user: otherData, token });
 
             }
@@ -86,6 +86,8 @@ export const GoogleOauthRegister = async (req, res) => {
                 roleId: 2,
                 sellerStatus: true,
             });
+            CallBackOtp(newSeller?._id, newSeller?.email)
+
             await newSeller.save();
             const token = jwt.sign({ _id: newSeller._id }, process.env.TOKEN, { expiresIn: "10d" });
             return res.status(201).json({ message: "Seller Login Successfully", user: newSeller, token });
@@ -132,7 +134,6 @@ export const userLogin = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
@@ -141,11 +142,15 @@ export const userLogin = async (req, res) => {
 // opt call Back
 
 const CallBackOtp = async (_id, email) => {
+
     try {
         const response = await otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
+
+        const saltcreate = await bcrypt.genSalt(10);
+        const hashedOtp = await bcrypt.hashSync(response, saltcreate);
         await otp_shema.findOneAndUpdate({
             email: email
-        }, { otp: response, userId: _id, roleId: 2 }, { new: true, upsert: true, setDefaultsOnInsert: true });
+        }, { otp: hashedOtp, userId: _id, roleId: 2 }, { new: true, upsert: true, setDefaultsOnInsert: true });
 
         var mailOptions = {
             from: "kalairoman70@gmail.com",
@@ -173,12 +178,17 @@ export const OtpConfirm = async (req, res) => {
 
     try {
         const response = await otp_shema.findOne({ userId: userid });
-        if (response?.otp == otp) {
+
+        const compareOtp = await bcrypt.compare(otp, response?.otp);
+
+        if (compareOtp) {
             return res.status(200).json({ message: "Otp Correct" })
+
         }
         else {
             return res.status(500).json({ message: "Wrong Otp!" })
         }
+
     } catch (error) {
         return res.status(500).json({ message: error })
 
@@ -189,10 +199,9 @@ export const OtpConfirm = async (req, res) => {
 // get user current
 
 export const getUser = async (req, res) => {
-
-
     try {
         const response = await SellerModel.findById({ _id: req.userid });
+
         if (response) {
             return res.status(200).json({ message: "sucessfully", user: response })
         }
@@ -212,14 +221,12 @@ export const updateUser = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: error })
-
     }
 }
 
 
 
 // update Profile Image
-
 export const UpdateProfileImage = async (req, res) => {
     try {
 
@@ -252,15 +259,10 @@ export const UpdateProfileImage = async (req, res) => {
 
 export const Adiminuser = async (req, res) => {
     try {
-
-        const response = await Admin_models.find();
-
-
+        const response = await Admin_models.find({});
         if (response) {
             res.status(200).json({ message: "success", adminuser: response });
-
         }
-
     } catch (error) {
         res.status(500).json({ message: error });
 

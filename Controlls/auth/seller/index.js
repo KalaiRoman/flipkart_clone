@@ -12,7 +12,4 @@ seller_router_auth.put("/update", verifyToken, updateUser)
 seller_router_auth.post("/update/image", verifyToken, upload.single("image"), UpdateProfileImage)
 seller_router_auth.get("/admin/users", Adiminuser)
 seller_router_auth.post("/chat/seller-to-admin", ChatUserseller)
-
-
-
 export default seller_router_auth;

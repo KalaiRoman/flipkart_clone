@@ -88,7 +88,7 @@ export const getAllProduct = async (req, res, next) => {
     // const skip = (page || 1 - 1) * size;
 
     try {
-        const response = await Product_Shema.find({}).populate("user").sort({ createdAt: -1 })
+        const response = await Product_Shema.find({ user: req.userid }).populate("user").sort({ createdAt: -1 })
         // .limit(limit).skip(skip);
         res.status(200).json({ message: "success", data: response });
 
@@ -161,20 +161,26 @@ export const deleteProduct = async (req, res, next) => {
 
 
 export const updateChatUser = async (req, res) => {
-    const id = req.params;
     try {
+
+        const { productId, message, senderStatus } = req.body;
 
         const data = {
             message: message,
-            status: false
+            status: false,
+            senderStatus: senderStatus,
+
         }
 
-        const findUser = await Product_Shema.findByIdAndUpdate({ _id: id }, {
+        const findUser = await Product_Shema.findByIdAndUpdate({ _id: productId }, {
             $push: { adminproductChat: data }
         }, { new: true });
 
+        res.status(200).json({ message: "Updated Chat Message" })
+
 
     } catch (error) {
+        res.status(404).json({ message: "delete error" })
 
     }
 }

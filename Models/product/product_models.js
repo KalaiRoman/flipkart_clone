@@ -4,6 +4,10 @@ const admin_shemachat = new mongoose.Schema({
     message: {
         type: String,
     },
+    senderStatus: {
+        type: String,
+        required: true,
+    },
     status: {
         type: Boolean,
         default: false

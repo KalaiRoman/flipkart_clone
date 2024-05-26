@@ -9,21 +9,16 @@ const chat_shema = new mongoose.Schema({
     type: {
         type: String,
         required: true
-    },
-    
+    }
 },
 {
     timestamps:true
 })
-const seller_shema = new mongoose.Schema({
+const portfolio_shema = new mongoose.Schema({
     username: String,
     email: {
         type: String, required: true,
         unique: true
-    },
-    password: {
-        type: String,
-        required: true
     },
     avatar: {
         type: String,
@@ -31,30 +26,23 @@ const seller_shema = new mongoose.Schema({
     },
     type: {
         type: String,
-        default: "seller"
+        default: "portfoliouser"
     },
     roleId: {
         type: Number,
         required: true,
-        default: 2
+        default: 4
     },
-    sellerStatus: {
+    portfoliouserStatus: {
         type: Boolean,
         required: true,
         default: true
     },
-    cloud_id: {
-        type: String
-    },
     chat: [chat_shema],
-    availableProducts: {
-        type: String,
-        default: 0
-    },
-    planName: String
+    
 },
     {
         timestamps: true
     });
 mongoose.models = {};
-export default mongoose.model("sellerauth", seller_shema);
+export default mongoose.model("portfolioauth", portfolio_shema);
