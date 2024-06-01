@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 import { v2 as cloudinary } from 'cloudinary';
 import Admin_models from '../../../Models/auth/Admin_models.js';
 import Seller_models from '../../../Models/auth/Seller_models.js';
+import Portfolio_usermodel from '../../../Models/auth/Portfolio_usermodel.js';
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -62,6 +63,22 @@ export const getUser = async (req, res) => {
 
     try {
         const response = await Seller_models.findById({ _id: req.body.userid });
+        if (response) {
+            return res.status(200).json({ message: "sucessfully", user: response })
+        }
+    } catch (error) {
+        res.status(500).json({ message: error })
+
+    }
+}
+
+
+// get current user portfolio
+
+export const getUserPortfolio = async (req, res) => {
+
+    try {
+        const response = await Portfolio_usermodel.findById({ _id: req.body.userid });
         if (response) {
             return res.status(200).json({ message: "sucessfully", user: response })
         }
@@ -132,6 +149,31 @@ export const UpdateProfileImage = async (req, res) => {
     }
 }
 
+
+
+// filter Sellers
+
+export const FilterUserTypes=async(req,res)=>{
+    const {userType}=req.body;
+    console.log(req.body)
+    try {
+
+        const sellers=await Seller_models.find({});
+        const portfoliusers=await Portfolio_usermodel.find({});
+        const mergeUsers=[...sellers,...portfoliusers];
+
+        const response=mergeUsers?.filter((item)=>item?.type==userType);
+
+        if(response)
+            {
+                return res.status(200).json({message:`${userType} All users`,status:true,user:response});
+            }
+    } catch (error) {
+        return res.status(200).json({message:error,status:false});
+        
+    }
+}
+
 // chat users
 
 export const ChatUser = async (req, res) => {
@@ -143,6 +185,30 @@ export const ChatUser = async (req, res) => {
             type: type
         }
         const response = await Seller_models.findByIdAndUpdate({ _id: userid }, {
+            $push: { chat: data }
+        }, { new: true });
+
+
+        res.status(200).json({ message: "succesfully chat user" })
+
+    } catch (error) {
+
+    }
+}
+
+
+// portfolio users chats
+
+export const ChatUserPortfolio = async (req, res) => {
+    const { userid, message, type } = req.body;
+    try {
+
+        const data = {
+            message: message,
+            type: type,
+            userstatusSaw:false
+        }
+        const response = await Portfolio_usermodel.findByIdAndUpdate({ _id: userid }, {
             $push: { chat: data }
         }, { new: true });
 
