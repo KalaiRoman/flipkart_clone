@@ -132,7 +132,8 @@ export const ChatUserportfolio = async (req, res) => {
     try {
         const data = {
             message: message,
-            type: type
+            type: type,
+            userstatusSaw:false
         }
         const response = await Portfolio_usermodel.findByIdAndUpdate({ _id: userid }, {
             $push: { chat: data }
@@ -142,6 +143,22 @@ export const ChatUserportfolio = async (req, res) => {
 res.status(404).json({message:error});
     }
 }
+
+// delete message comment
+
+export const ChatUserDeleteportfolio = async (req, res) => {
+    const {messageId} = req.body;
+    try {
+      
+await Portfolio_usermodel.findByIdAndUpdate({ _id: req.userid }, {
+            $pull: { chat: {_id:messageId} }
+        }, { new: true });
+        res.status(200).json({ message: "Delete Message successfully",status:true })
+    } catch (error) {
+res.status(404).json({message:error});
+    }
+}
+
 export const Adiminuser = async (req, res) => {
     try {
         const response = await Admin_models.find({});

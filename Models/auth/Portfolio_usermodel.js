@@ -9,6 +9,11 @@ const chat_shema = new mongoose.Schema({
     type: {
         type: String,
         required: true
+    },
+    userstatusSaw:{
+        type:Boolean,
+        required:true,
+        default:false
     }
 },
 {

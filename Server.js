@@ -14,14 +14,9 @@ ConnectDB();
 // app
 const app = express();
 app.use(express.json());
-
-
-
 app.use(morgan("dev"));
-
 // helmet secure
 app.use(helmet());
-
 app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001","https://kalaiportfolio.onrender.com","https://kalaiportfolio.vercel.app"] }));
 // routing apis
 app.use("/flip/ecommerce", router);
