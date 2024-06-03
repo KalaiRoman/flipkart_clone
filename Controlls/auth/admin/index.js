@@ -1,5 +1,5 @@
 import express from 'express';
-import { ChatUser, FilterUserTypes, UpdateProfileImage, getAllUser, getUser, updateUser, userLogin,ChatUserPortfolio,getUserPortfolio } from './Admin_controlls.js';
+import { ChatUser, FilterUserTypes, UpdateProfileImage, getAllUser, getUser, updateUser, userLogin,ChatUserPortfolio,AllPortfolioUsers,ChatUserMessageStatus,getUserPortfolio } from './Admin_controlls.js';
 import { verifyToken } from './../../../Middleware/Tokenverification.js';
 import upload from '../../../Middleware/Multerurl.js';
 const admin_router_auth = express.Router();
@@ -12,5 +12,6 @@ admin_router_auth.post("/update/image", verifyToken, upload.single("image"), Upd
 admin_router_auth.post("/chat/admin-to-seller", ChatUser)
 admin_router_auth.post("/chat/admin-to-portfolio", ChatUserPortfolio)
 admin_router_auth.post("/chat/user/filter", FilterUserTypes)
-
+admin_router_auth.post("/chat/user/status/update", ChatUserMessageStatus)
+admin_router_auth.post("/get/allportfoiousers", AllPortfolioUsers)
 export default admin_router_auth;

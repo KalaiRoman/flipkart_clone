@@ -154,32 +154,35 @@ export const UpdateProfileImage = async (req, res) => {
 // filter Sellers
 
 export const FilterUserTypes=async(req,res)=>{
-    const {userType}=req.body;
-    console.log(req.body)
     try {
-
         const sellers=await Seller_models.find({});
-        const portfoliusers=await Portfolio_usermodel.find({});
-        const mergeUsers=[...sellers,...portfoliusers];
-
-        const response=mergeUsers?.filter((item)=>item?.type==userType);
-
-        if(response)
-            {
-                return res.status(200).json({message:`${userType} All users`,status:true,user:response});
-            }
+      
+                return res.status(200).json({message:`All users`,status:true,user:sellers});
+            
     } catch (error) {
         return res.status(200).json({message:error,status:false});
-        
+    }
+}
+
+// portfolio users
+
+
+export const AllPortfolioUsers=async(req,res)=>{
+    try {
+const portfoliusers=await Portfolio_usermodel.find({});
+
+
+                return res.status(200).json({message:`All users`,status:true,user:portfoliusers});
+            
+    } catch (error) {
+        return res.status(200).json({message:error,status:false});
     }
 }
 
 // chat users
-
 export const ChatUser = async (req, res) => {
     const { userid, message, type } = req.body;
     try {
-
         const data = {
             message: message,
             type: type
@@ -187,15 +190,32 @@ export const ChatUser = async (req, res) => {
         const response = await Seller_models.findByIdAndUpdate({ _id: userid }, {
             $push: { chat: data }
         }, { new: true });
-
-
-        res.status(200).json({ message: "succesfully chat user" })
-
+        return res.status(200).json({ message: "succesfully chat user" })
     } catch (error) {
 
     }
 }
 
+
+// update all messages
+
+export const ChatUserMessageStatus = async (req, res) => {
+    const { userid,type} = req.body;
+
+    console.log(req.body);
+    try {
+        const response = await Portfolio_usermodel.findById({ _id:userid });
+        response.chat.forEach(chatItem => {
+            if (chatItem.type === type) {
+                chatItem.userstatusSaw = true;
+            }
+        });
+        await response.save();
+        return res.status(200).json({ message: "Updated Status Message" })
+    } catch (error) {
+
+    }
+}
 
 // portfolio users chats
 

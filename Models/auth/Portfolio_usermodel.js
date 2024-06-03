@@ -14,6 +14,10 @@ const chat_shema = new mongoose.Schema({
         type:Boolean,
         required:true,
         default:false
+    },
+    likeUser:{
+        type:String,
+        default:""
     }
 },
 {

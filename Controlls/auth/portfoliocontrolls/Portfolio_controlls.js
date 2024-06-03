@@ -133,7 +133,8 @@ export const ChatUserportfolio = async (req, res) => {
         const data = {
             message: message,
             type: type,
-            userstatusSaw:false
+            userstatusSaw:false,
+            likeUser:""
         }
         const response = await Portfolio_usermodel.findByIdAndUpdate({ _id: userid }, {
             $push: { chat: data }
@@ -159,12 +160,47 @@ res.status(404).json({message:error});
     }
 }
 
+// chat message status
+export const ChatUserStatusUpdateportfolio = async (req, res) => {
+    try {
+      
+        const response = await Portfolio_usermodel.findById({ _id:userid });
+        response.chat.forEach(chatItem => {
+            if (chatItem.type === type) {
+                chatItem.userstatusSaw = true;
+            }
+        });
+        await response.save();
+        return res.status(200).json({ message: "Updated Status Message" })
+    } catch (error) {
+return res.status(404).json({message:error});
+    }
+}
+
 export const Adiminuser = async (req, res) => {
     try {
         const response = await Admin_models.find({});
 
         if (response) {
             return res.status(200).json({ message: "success", adminuser: response });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error });
+    }
+}
+
+// like User Chat Message
+
+export const chatMessageLike = async (req, res) => {
+
+    const {chatId,like}=req.body;
+    try {
+        const response = await Portfolio_usermodel.findById({ _id:req.userid });
+        const LikeUser=await response?.chat?.find((item,index)=>item?._id==chatId);
+        LikeUser.likeUser=like;
+        await response.save();
+        if (response) {
+            return res.status(200).json({ message: "Like User Successfully", status:true,data: response });
         }
     } catch (error) {
         res.status(500).json({ message: error });

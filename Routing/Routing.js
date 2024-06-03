@@ -21,7 +21,6 @@ router.use("/seller/product", productrouter)
 router.use("/seller/plans", subscriptionrouter)
 router.use("/seller/subscription", sellersubscrionrouter)
 
-
 // admin
 router.use("/admin/auth", admin_router_auth)
 router.use("/admin/approval", admin_router_approval)
