@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001","http://localhost:3002","https://kalaiportfolio.onrender.com","https://kalaiportfolio.vercel.app","https://admin-flipkart.onrender.com/"] }));
+app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001","http://localhost:3002","https://kalaiportfolio.onrender.com","https://kalaiportfolio.vercel.app","https://admin-flipkart.onrender.com"] }));
 app.use("/flip/ecommerce", router);
 app.use(notFound)
 app.use(errorMiddleware)
