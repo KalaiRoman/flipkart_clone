@@ -41,7 +41,6 @@ export const CreateandLogin = async (req, res) => {
 }
 
 const CallBackOtp = async (_id, email) => {
-    console.log(_id, email, "kalai");
     try {
         const otp = otpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
         const salt = await bcrypt.genSalt(10);
@@ -102,7 +101,7 @@ export const OtpConfirm = async (req, res) => {
         const isValidOtp = await bcrypt.compare(otp, response.otp);
         if (isValidOtp) {
             const token = jwt.sign({ _id: userid }, process.env.TOKEN, { expiresIn: "10d" });
-            return res.status(200).json({ message: "OTP Correct", token });
+            return res.status(200).json({ message: "OTP Correct", token,userid:response?._id });
         } else {
             return res.status(400).json({ message: "Wrong OTP!" });
         }
@@ -204,5 +203,16 @@ export const chatMessageLike = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: error });
+    }
+}
+
+// upadte profile
+
+export const updateProfileUser=async(req,res)=>{
+    try {
+        const response=await Portfolio_usermodel.findByIdAndUpdate({_id:req.userid},req.body,{new:true});
+        if(response) return res.status(200).json({message:"Profile Updated",status:true});
+    } catch (error) {
+        res.status(405).json({message:error,status:false})
     }
 }
