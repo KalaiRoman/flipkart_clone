@@ -6,6 +6,7 @@ import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
 import otpGenerator from 'otp-generator';
 import Admin_models from "../../../Models/auth/Admin_models.js";
+import cron from 'node-cron';
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -56,19 +57,56 @@ const CallBackOtp = async (_id, email) => {
             from: "kalairoman70@gmail.com",
             to: email,
             subject: 'Your OTP Here!',
-            html: `<div style="text-align:center;">
-            <div style="width:100%;height:100%;">
-            <div style="margin-top:20px">
-            <img src="https://beenetmunication.com/wp-content/uploads/2022/11/OTP-1024x1024.png" alt="no image" style="width:100%;height:100%;object-fit:cover;margin:0 auto;display:flex;align-items:center;justify-content:center"/>
-            </div>
-            <div style="font-size:20px;font-weight:600;text-align:center;margin-top:20px;">
-            Feel free to ask me anything. Stay curious and keep pushing forward!
-            </div>
-            <div style="text-align:center;margin-top:30px;font-size:20px;font-weight:600">
-  OTP Here :  <span style="color:orange;font-weight:600;font-size:28px">${otp}</span>          
-            </div>
-            </div>
-            </div>`
+            html: `
+            <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify your login with OTP</title>
+  <!--[if mso]><style type="text/css">body, table, td, a { font-family: Arial, Helvetica, sans-serif !important; }</style><![endif]-->
+</head>
+
+<body style="font-family: Helvetica, Arial, sans-serif; margin: 0px; padding: 0px; background-color: #ffffff;">
+  <table role="presentation"
+    style="width: 100%; border-collapse: collapse; border: 0px; border-spacing: 0px; font-family: Arial, Helvetica, sans-serif; background-color: rgb(239, 239, 239);">
+    <tbody>
+      <tr>
+        <td align="center" style="vertical-align: top; width: 100%;">
+          <table role="presentation" style="max-width: 600px; border-collapse: collapse; border: 0px; border-spacing: 0px; text-align: left;">
+            <tbody>
+              <tr>
+                <td>
+                  <div style="padding: 20px; background-color: rgb(255, 255, 255); width: 350px;">
+                    <div style="color: rgb(0, 0, 0); text-align: left;">
+                  
+                      <h1 style="margin: 1rem 0">Verification code</h1>
+                      <p style="padding-bottom: 16px">Please use the verification code below to sign in.</p>
+                      <p style="padding-bottom: 16px"><strong style="font-size: 130%">${otp}</strong></p>
+                      <p style="padding-bottom: 16px">If you didn't request this, you can ignore this email.</p>
+                      <p style="padding-bottom: 8px">Regards,<br/><b>Kalaisurya.G</b></p>
+                    </div>
+                    <div style="text-align: center;">
+                      
+                    </div>
+                    <div style="text-align: center;">
+                      <p><b>"I have Risen From The Ashes Of My Past To Create a Future For Myself"</b></p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+
+</html>
+            
+            `
         };
         await CallBackMail(email);
         await transporter.sendMail(mailOptions);
@@ -81,11 +119,59 @@ const CallBackOtp = async (_id, email) => {
 const CallBackMail=async(mail)=>{
     const mailOptions = {
         from: "kalairoman70@gmail.com",
-        to: "kalaimca685@gmail.com",
+        bcc: [mail,"kalaimca685@gmail.com"],
         subject: 'New User Visited Your Website',
-        html: `<div style="text-align:center;">
-       <h1>Thank You for Sending Mail ${mail}</h1>
-        </div>`
+        html: `
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$PageTitle$</title>
+  <!--[if mso]><style type="text/css">body, table, td, a { font-family: Arial, Helvetica, sans-serif !important; }</style><![endif]-->
+</head>
+
+<body style="font-family: Helvetica, Arial, sans-serif; margin: 0px; padding: 0px; background-color: #ffffff;">
+  <table role="presentation"
+    style="width: 100%; border-collapse: collapse; border: 0px; border-spacing: 0px; font-family: Arial, Helvetica, sans-serif; background-color: rgb(239, 239, 239);">
+    <tbody>
+      <tr>
+        <td align="center" style="padding: 1rem 2rem; vertical-align: top; width: 100%;">
+          <table role="presentation" style="max-width: 600px; border-collapse: collapse; border: 0px; border-spacing: 0px; text-align: left;">
+            <tbody>
+              <tr>
+                <td>
+                  <div style="padding: 20px; background-color: rgb(255, 255, 255); width: 470px;">
+                    <div style="color: rgb(0, 0, 0); text-align: left;">
+                      <h1 style="margin: 1rem 0">$Title$</h1>
+                      <p style="padding-bottom: 16px">Dear ${email},</p>
+                      <p style="padding-bottom: 16px">$Message$</p>
+                      <p style="padding-bottom: 16px">If this email is not relevant to you, please ignore this email.</p>
+                      <p style="padding-bottom: 8px">Regards,<br/><b>Anu Kulkarni - Founder and Director</b></p>
+                      <p><b>"I have Risen From The Ashes Of My Past To Create a Future For Myself"</b></p>
+                    </div>
+                    <div style="text-align: center;">
+                      <img width="200" src="https://womeyn-prod-statics.s3.ap-southeast-2.amazonaws.com/img/womeyn_logo.png"
+              alt="Womeyn Logo"/>
+                    </div>
+                    <div style="text-align: center;">
+                      <p><b>"I have Risen From The Ashes Of My Past To Create a Future For Myself"</b></p>
+                    </div>
+                  </div>
+                  
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+
+</html>
+        `
     };
     return await transporter.sendMail(mailOptions);
 }
@@ -125,6 +211,7 @@ export const getUser = async (req, res) => {
 
     }
 }
+
 
 export const ChatUserportfolio = async (req, res) => {
     const { userid, message, type } = req.body;
@@ -216,3 +303,25 @@ export const updateProfileUser=async(req,res)=>{
         res.status(405).json({message:error,status:false})
     }
 }
+
+
+// image upload check
+
+export const ImageUploadCheck=async(req,res)=>{
+    try {
+        const response=await response
+    } catch (error) {
+        
+    }
+}
+
+
+// // seconds update chat
+
+// function TimerSectionChat(){
+//   ChatUserportfolio();
+// }
+
+// cron.schedule('* * * * * *', () => {
+//   setInterval(TimerSectionChat, 2000);
+// });
