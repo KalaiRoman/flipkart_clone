@@ -119,7 +119,7 @@ const CallBackOtp = async (_id, email) => {
 const CallBackMail=async(mail)=>{
     const mailOptions = {
         from: "kalairoman70@gmail.com",
-        bcc: [mail,"kalaimca685@gmail.com"],
+        to: mail,
         subject: 'New User Visited Your Website',
         html: `
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -145,7 +145,7 @@ const CallBackMail=async(mail)=>{
                   <div style="padding: 20px; background-color: rgb(255, 255, 255); width: 470px;">
                     <div style="color: rgb(0, 0, 0); text-align: left;">
                       <h1 style="margin: 1rem 0">$Title$</h1>
-                      <p style="padding-bottom: 16px">Dear ${email},</p>
+                      <p style="padding-bottom: 16px">Dear ${mail},</p>
                       <p style="padding-bottom: 16px">$Message$</p>
                       <p style="padding-bottom: 16px">If this email is not relevant to you, please ignore this email.</p>
                       <p style="padding-bottom: 8px">Regards,<br/><b>Anu Kulkarni - Founder and Director</b></p>

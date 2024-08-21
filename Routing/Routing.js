@@ -8,6 +8,8 @@ import subscriptionrouter from '../Controlls/subsciptioncontrol/index.js';
 import sellersubscrionrouter from '../Controlls/sellersubscritionplan/index.js';
 import portfolio_router_auth from '../Controlls/auth/portfoliocontrolls/index.js';
 import portfolio_router_auth_mil from '../Controlls/auth/portfoliomailcontrolls/index.js';
+import zoom_auth_router from '../Controlls/Zoomauthcontroll/index.js';
+import create_meeting_router from '../Controlls/zoommeetingcreatecontrol/index.js';
 
 const router = express.Router();
 
@@ -41,11 +43,15 @@ router.use("/portfolio/mail", portfolio_router_auth_mil)
 
 
 
+// zoom users
+
+router.use("/auth/zoom",zoom_auth_router)
 
 
 
+// zoom meeting create
 
-
+router.use("/zoom/meeting",create_meeting_router)
 
 
 export default router;
