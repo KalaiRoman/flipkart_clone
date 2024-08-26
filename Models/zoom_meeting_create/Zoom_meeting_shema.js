@@ -13,8 +13,8 @@ const zoom_meeting_creae_shema=new mongoose.Schema({
         required:true
     },
     status:{
-        type:String,
-        default:"Active"
+        type:Boolean,
+        default:true
     },
     user:{
         type:mongoose.Schema.Types.ObjectId,
@@ -27,8 +27,23 @@ const zoom_meeting_creae_shema=new mongoose.Schema({
     MeetingId:{
         type:String,
         required:true
+    },
+    invitedUsers:{
+        type:Array,
+        default:[]
+    },
+    selectAllStatus:{
+        type:Boolean,
+        default:false
+    },
+    joinedUsers:{
+        type:Array,
+        default:[]
+    },
+    rejectedUsers:{
+        type:Array,
+        default:[]
     }
-  
 },
 {
     timestamps:true

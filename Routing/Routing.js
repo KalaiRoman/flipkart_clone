@@ -10,6 +10,7 @@ import portfolio_router_auth from '../Controlls/auth/portfoliocontrolls/index.js
 import portfolio_router_auth_mil from '../Controlls/auth/portfoliomailcontrolls/index.js';
 import zoom_auth_router from '../Controlls/Zoomauthcontroll/index.js';
 import create_meeting_router from '../Controlls/zoommeetingcreatecontrol/index.js';
+import zoom_meet_user_router from '../Controlls/zoommeetingemailusers/index.js';
 
 const router = express.Router();
 
@@ -52,6 +53,8 @@ router.use("/auth/zoom",zoom_auth_router)
 // zoom meeting create
 
 router.use("/zoom/meeting",create_meeting_router)
+router.use("/zoom/meet",zoom_meet_user_router)
+
 
 
 export default router;
