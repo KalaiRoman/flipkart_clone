@@ -129,7 +129,7 @@ export const SendMail_user = async (req, res) => {
                                   <h1 style="margin: 1rem 0">Hi! ${userEmail?.split("@")[0]}</h1>
                                   <p style="padding-bottom: 16px">I hope this message finds you well.</p>
                                   <p style="padding-bottom: 16px">Please join the meeting via the following link:</p>
-                                  <p style="text-align: center; padding-bottom: 16px; text-decoration: none !important;"><a href="https://zoom-meeting-bice.vercel.app/confirm-meeting?meetingId=${userfind?.MeetingId}" target="_blank"
+                                  <p style="text-align: center; padding-bottom: 16px; text-decoration: none !important;"><a href="https://zoom-meet-chi.vercel.app/confirm-meeting?meetingId=${userfind?.MeetingId}" target="_blank"
                                     style="text-decoration: none; padding: 12px 24px; border-radius: 4px; color: #FFF; background: #2B52F5;display: inline-block;margin: 0.5rem 0;">
                                   Join Meeting
                                     </a></p>
@@ -186,7 +186,7 @@ export const Track_meeting_mail=async(req,res)=>{
                             await findMeetingId.save();
                         }
                        
-                        return res.status(200).json({message:"Meeting Joined",status:true,data:`https://zoom-meeting-bice.vercel.app/join?roomID=${meetingId}`})
+                        return res.status(200).json({message:"Meeting Joined",status:true,data:`https://zoom-meet-chi.vercel.app/join?roomID=${meetingId}`})
                         // return res.status(200).json({message:"Meeting Joined",status:true,data:`http://localhost:3000/join?roomID=${meetingId}`})
 
                     }
