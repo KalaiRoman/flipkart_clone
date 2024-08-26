@@ -186,8 +186,8 @@ export const Track_meeting_mail=async(req,res)=>{
                             await findMeetingId.save();
                         }
                        
-                        // return res.status(200).json({message:"Meeting Joined",status:true,data:`https://zoom-meeting-zeta.vercel.app/confirm-meeting?meetingId=${meetingId}`})
-                        return res.status(200).json({message:"Meeting Joined",status:true,data:`http://localhost:3000/join?roomID=${meetingId}`})
+                        return res.status(200).json({message:"Meeting Joined",status:true,data:`https://zoom-meeting-zeta.vercel.app/join?roomID=${meetingId}`})
+                        // return res.status(200).json({message:"Meeting Joined",status:true,data:`http://localhost:3000/join?roomID=${meetingId}`})
 
                     }
             }
