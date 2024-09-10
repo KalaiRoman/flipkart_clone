@@ -44,7 +44,6 @@ export const Create_Meeting=async(req,res)=>{
 // get meeting in perticlular users
 export const Get_Meetings=async(req,res)=>{
     try {
-
         const response=await Zoom_meeting_shema.find({user:req.userid}).populate("user");
         if(response)
         {
@@ -54,6 +53,20 @@ export const Get_Meetings=async(req,res)=>{
         res.status(404).json({message:"Something Went Wrong",status:false});
         
     }
+}
+
+// get meeting in perticlular users
+export const Get_Meetings_over_all=async(req,res)=>{
+  try {
+      const response=await Zoom_meeting_shema.find({});
+      if(response)
+      {
+         return res.status(200).json({message:"success Data",status:true,data:response})
+      }
+  } catch (error) {   
+      res.status(404).json({message:"Something Went Wrong",status:false});
+      
+  }
 }
 
 // get Single data 

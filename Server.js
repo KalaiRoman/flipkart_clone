@@ -3,12 +3,17 @@ import express from 'express';
 import cors from 'cors';
 import router from './Routing/Routing.js';
 import helmet from 'helmet';
+import { Server } from 'socket.io';
+import http from 'http';
 import { errorMiddleware, notFound } from './Middleware/errorMiddleware.js';
 import ConnectDB from './Config/Db.js';
 import morgan from 'morgan';
 dotenv.config();
 ConnectDB();
 const app = express();
+
+const server=http.createServer(app);
+const io=new Server(server);
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
@@ -16,7 +21,17 @@ app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://loca
 app.use("/flip/ecommerce", router);
 app.use(notFound)
 app.use(errorMiddleware)
-app.listen(process.env.PORT, () => {
-    console.log(`server Running http://localhost:${process.env.PORT}`)
+// app.listen(process.env.PORT, () => {
+//     console.log(`server Running http://localhost:${process.env.PORT}`)
+// })
+io.on("connection",(socket)=>{
+    console.log("User Conect Id : ",socket.id)
+
+    socket.on("create-meeting",(mes)=>{
+    io.emit("new-meeting",mes)
+    })
 })
 
+server.listen(process.env.PORT, () => {
+    console.log(`server Running http://localhost:${process.env.PORT}`)
+})
