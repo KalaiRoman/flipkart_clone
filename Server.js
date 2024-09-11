@@ -24,13 +24,23 @@ app.use(errorMiddleware)
 // app.listen(process.env.PORT, () => {
 //     console.log(`server Running http://localhost:${process.env.PORT}`)
 // })
+var countdata=0;
 io.on("connection",(socket)=>{
     console.log("User Conect Id : ",socket.id)
-
     socket.on("create-meeting",(mes)=>{
     io.emit("new-meeting",mes)
-    })
+
 })
+
+io.emit("user_count",countdata);
+
+socket.on("disconnect",function(){
+    countdata--;
+io.emit("user_count",countdata);
+
+})
+})
+
 
 server.listen(process.env.PORT, () => {
     console.log(`server Running http://localhost:${process.env.PORT}`)

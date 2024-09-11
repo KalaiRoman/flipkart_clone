@@ -3,6 +3,7 @@ import jwt  from 'jsonwebtoken';
 // create meeting
 import nodemailer from 'nodemailer';
 import Zoom_auth from "../../Models/auth/Zoom_auth.js";
+import moment from 'moment';
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -12,6 +13,9 @@ const transporter = nodemailer.createTransport({
 });
 export const Create_Meeting=async(req,res)=>{
     try {
+
+      const today = moment();
+      const tomorrow = moment().add(1, 'days');
      
         const {
             name,
@@ -20,6 +24,8 @@ export const Create_Meeting=async(req,res)=>{
             status,
             MeetingDate,invitedUsers,selectAllStatus,
         }=req.body;
+
+        const meetingDate = moment(MeetingDate);
         const tokenGen=await jwt.sign({name:name},process.env.TOKEN);
         const response=await Zoom_meeting_shema.create({
             name,
@@ -28,11 +34,13 @@ export const Create_Meeting=async(req,res)=>{
             status,
             user:req.userid,
             MeetingDate,
-            MeetingId:tokenGen.slice(0,8),
+            MeetingId:`CDP360${tokenGen.slice(0,5)}`,
             invitedUsers,
             selectAllStatus,
             joinedUsers:[],
-            rejectedUsers:[]
+            rejectedUsers:[],
+            dayStatus:meetingDate.isSame(today, 'day')?"Today":meetingDate.isSame(tomorrow, 'day')?"Tomorrow":"YesterDay",
+            publishStatus:false
         })
         await response.save();
         res.status(201).json({message:"Created Meeting Successfully",status:true,data:response});
@@ -83,7 +91,13 @@ export const Single_Meeting=async(req,res)=>{
 // edit data 
 export const Edit_Meeting=async(req,res)=>{
     try {
-        const response=await Zoom_meeting_shema.findByIdAndUpdate({_id:req.params.id},req.body,{new:true});
+      const today = moment();
+      const tomorrow = moment().add(1, 'days');
+      const meetingDate = moment(req.body.MeetingDate);
+        const response=await Zoom_meeting_shema.findByIdAndUpdate({_id:req.params.id},{
+          ...req.body,
+          dayStatus:meetingDate.isSame(today, 'day')?"Today":meetingDate.isSame(tomorrow, 'day')?"Tomorrow":"YesterDay"
+        },{new:true});
         res.status(200).json({message:"Data Updated",status:true,data:response})
     } catch (error) {   
         res.status(404).json({message:"Something Went Wrong",status:false});
@@ -105,11 +119,26 @@ export const Edit_status_Meeting=async(req,res)=>{
 }
 
 
+// delete meeting
+
+export const Delete_Meeting_user=async(req,res)=>{
+  try {
+    const response=await Zoom_meeting_shema.findByIdAndDelete(req.params.id);
+    return res.status(200).json({message:"Delete Meeting User",status:true});
+    
+  } catch (error) {
+    return res.status(404).json({message:"Something Went Wrong",status:false});
+    
+  }
+}
+
 // send mail
 export const SendMail_user = async (req, res) => {
     const id = req.params.id;
     try {
       const userfind = await Zoom_meeting_shema.findById({ _id: id });  
+   await Zoom_meeting_shema.findByIdAndUpdate({ _id: id },{publishStatus:true},{new:true}); 
+
       if (!userfind) {
         return res.status(404).json({ message: "Meeting not found", status: false });
       }
@@ -142,7 +171,7 @@ export const SendMail_user = async (req, res) => {
                                   <h1 style="margin: 1rem 0">Hi! ${userEmail?.split("@")[0]}</h1>
                                   <p style="padding-bottom: 16px">I hope this message finds you well.</p>
                                   <p style="padding-bottom: 16px">Please join the meeting via the following link:</p>
-                                  <p style="text-align: center; padding-bottom: 16px; text-decoration: none !important;"><a href="https://zoom-meet-chi.vercel.app/confirm-meeting?meetingId=${userfind?.MeetingId}" target="_blank"
+                                  <p style="text-align: center; padding-bottom: 16px; text-decoration: none !important;"><a href="https://zoom-student.vercel.app/join?roomID=${userfind?.MeetingId}" target="_blank"
                                     style="text-decoration: none; padding: 12px 24px; border-radius: 4px; color: #FFF; background: #2B52F5;display: inline-block;margin: 0.5rem 0;">
                                   Join Meeting
                                     </a></p>

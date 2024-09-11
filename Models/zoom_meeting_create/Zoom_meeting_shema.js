@@ -43,6 +43,17 @@ const zoom_meeting_creae_shema=new mongoose.Schema({
     rejectedUsers:{
         type:Array,
         default:[]
+    },
+    dayStatus:{
+        type:String,
+        required:true
+    },
+    des:{
+        type:String
+    },
+    publishStatus:{
+type:Boolean,
+default:false
     }
 },
 {
