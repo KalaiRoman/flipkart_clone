@@ -17,6 +17,10 @@ const io=new Server(server);
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
+
+app.get("/woriking,(req,res,error)=>{
+        return "working db"
+        });
 app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001","http://localhost:3002","https://kalaiportfolio.onrender.com","https://kalaiportfolio.vercel.app","https://admin-flipkart.onrender.com","https://zoom-meet-chi.vercel.app","https://zoom-student.vercel.app"] }));
 app.use("/flip/ecommerce", router);
 app.use(notFound)
